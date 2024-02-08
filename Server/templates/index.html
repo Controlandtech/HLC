@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>homelab-cable</title>
+        <link href="https://fonts.cdnfonts.com/css/digital-7-mono" rel="stylesheet">
+        <link rel="stylesheet" type="text/css" href="{{ url_for('static',filename='styles/index.css')}}"/>
+    </head>
+    <body>
+        <div class="rack">
+            <div class="appliance">
+                <div class="hole hole-upper-left"></div>
+                <div class="hole hole-bottom-left"></div>
+                <div class="hole hole-upper-right"></div>
+                <div class="hole hole-bottom-right"></div>
+                <div id="status-holder">
+                    <div id="status-lcd" class="led_2 led-off" hx-get="/htmx/status" hx-trigger="load" hx-swap="outerHTML">{{server_ip}}</div>
+                    <div class="label-text">Server</div>
+                </div>
+                <div id="status-holder">
+                    <div class="label-text">Currently Playing</div>
+                    <div id="status-lcd" class="led led-off" hx-get="/htmx/status" hx-trigger="load" hx-swap="outerHTML">{{server_side[0]}}</div>
+                    <div class="label-text">Next Up</div>
+                    <div id="status-lcd" class="led led-off" hx-get="/htmx/status" hx-trigger="load" hx-swap="outerHTML">{{server_side[1]}}</div>
+                </div>
+                
+                <div id="play-next">
+                    <form action="/server_skip_forward/" method="post">
+                        <button name="checkState" type="submit" class="metal linear small"style="margin-bottom: 15%;">></button>
+                    </form>
+                </div>
+                
+                <div id="play-next">
+                    <form action="/server_settings/" method="post">
+                        <input type="hidden" name="settings_field" value={{server_ip}}>
+                        <button name="checkState" type="submit" class="metal linear small"><img src="{{ url_for('static',filename='styles/images/settings.png')}}" width=75% style="margin-top: 15%;"></button>
+                    </form>
+                </div>
+                
+                <div id="play-next">
+                    <form action="/forward/" method="post">
+                        <button name="checkState" type="submit" class="metal linear small"><img src="{{ url_for('static',filename='styles/images/refresh2.png')}}" width=75% style="margin-top: 2%;"></button>
+                    </form>
+                </div>
+                
+                <div id="play-next">
+                    <form action="/server_skip_back/" method="post">
+                        <button name="checkState" type="submit" class="metal linear small"style="margin-top: 15%;"><</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+        {% for x in range(0, len_server)%}
+        <div class="rack">
+            <div class="appliance">
+                <div class="hole hole-upper-left"></div>
+                <div class="hole hole-bottom-left"></div>
+                <div class="hole hole-upper-right"></div>
+                <div class="hole hole-bottom-right"></div>
+                <div id="status-holder">
+                    <div id="status-lcd" class="led_2 led-off" hx-get="/htmx/status" hx-trigger="load" hx-swap="outerHTML">{{servers[x]}}</div>
+                    <div class="label-text">Server</div>
+                </div>
+                <div id="status-holder">
+                    <div class="label-text">Currently Playing</div>
+                    <div id="status-lcd" class="led led-off" hx-get="/htmx/status" hx-trigger="load" hx-swap="outerHTML">{{data[servers[x]][0]}}</div>
+                    <div class="label-text">Next Up</div>
+                    <div id="status-lcd" class="led led-off" hx-get="/htmx/status" hx-trigger="load" hx-swap="outerHTML">{{data[servers[x]][1]}}</div>
+                </div>
+                <div id="play-next">
+                    <form action="/skip_forward/" method="post">
+                        <input type="hidden" name="next" value={{servers[x]}}>
+                        <button name="checkState" type="submit" class="metal linear small" style="padding-bottom: 20px;">></button>
+                    </form>
+                </div>
+                <div id="play-next">
+                    <form action="/settings/" method="post">
+                        <input type="hidden" name="settings_field" value={{servers[x]}}>
+                        <button name="checkState" type="submit" class="metal linear small"><img src="{{ url_for('static',filename='styles/images/settings.png')}}" width=75% style="margin-top: 15%;"></button>
+                    </form>
+                </div>
+                <div id="play-next">
+                    <form action="/refresh/" method="post">
+                        <input type="hidden" name="client_ip" value={{servers[x]}}>
+                        <button name="checkState" type="submit" class="metal linear small"><img src="{{ url_for('static',filename='styles/images/refresh.png')}}" width=75% style="margin-top: 15%;"></button>
+                    </form>
+                </div>
+                <div id="play-next">
+                    <form action="/skip_back/" method="post">
+                        <input type="hidden" name="previous" value={{servers[x]}}>
+                        <button name="checkState" type="submit" class="metal linear small"><</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+        {%endfor%}
+        
+
+    </body>
+</html>
